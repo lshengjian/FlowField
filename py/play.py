@@ -1,95 +1,43 @@
 import pygame
-from pygame import Vector2
-from myfun import slop,linear_gradient
-from random import randrange
 
+from flowfield.utils import linear_gradient
+from flowfield.Ball import Ball
+from flowfield.Grid import Grid
+from flowfield.demos import F2 as F
 
-FPS=30
+FPS=60
+step=0.02
+N=40
+W,H=800,800
+SIZE=H//N
 
-w,h=800,600
-hw,hh=w//2,h//2
-N=20
-step=0.05
-def p2c(x,y):
-    return (hw*(1+x),hh*(1-y))
+X_MIN,X_MAX=-2,2
+Y_MIN,Y_MAX=-4,4
+kw=W/(X_MAX-X_MIN)
+kh=H/(Y_MAX-Y_MIN)
 
-def c2p(x,y):
-    return ((x-hw)/hw,(hh-y)/hh)
+def toMath(x,y):
+    return (X_MIN+x/kw,Y_MIN+(H-y)/kh)
 
+def toScreen(x,y):
+    return (kw*(x-X_MIN),H-kh*(y-Y_MIN))
 
 CS=linear_gradient("#0000FF","#FF0000",100)
 
-
-class Ball:
-    p:Vector2
-    screen:pygame.surface=None
-
-    def __init__(self,s,x0,y0):
-        self.p=Vector2(x0,y0)
-        self.screen=s
-
-    def move(self):
-        x,y=self.p
-        if x>1:
-            x=-1
-        s=slop(self.p)
-        x1,y1=x+step,y+step*s
-        self.p=Vector2(x1,y1)
-
-    def draw(self):
-        x,y=self.p
-        x,y=p2c(x,y)
-        pygame.draw.circle(self.screen, "red", [x, y], 6)
-
-
-class Point:
-    p:Vector2
-    screen:pygame.surface=None
-
-    def __init__(self,s,a,b):
-        self.p=Vector2(a,b)
-        self.screen=s
-
-    def draw(self):
-        x,y=self.p
-        s=slop(self.p)
-        x1,y1=x+step,y+step*s
-        x,y=p2c(x,y)
-        x1,y1=p2c(x1,y1)
-       
-        #pygame.draw.circle(self.screen, "blue", [x, y], 2)
-        c=CS[0]#randrange(0,len(CS))
-
-        pygame.draw.aaline(self.screen,c, [x,y], [x1, y1], True)
-
     
 def main():
-    #global cnt
-    # Initialize pygame
     pygame.init()
-    
-
-    # Set the height and width of the screen
-    size = [w, h]
+    size = [W, H]
     screen = pygame.display.set_mode(size)
-    ps=[]
-    ball =Ball(screen,-1,0.5)
-
-    for i in range(1,N):
-        for j in range(1,N):
-            ps.append(Point(screen,2*(i-N//2)/N,2*(j-N//2)/N))
+    ball =Ball(X_MIN,Y_MAX/2,X_MIN,X_MAX)
+    grid =Grid(F,(X_MIN,X_MAX),(Y_MIN,Y_MAX),N)
 
     pygame.display.set_caption("Example code for the draw module")
-
-    # Loop until the user clicks the close button.
     done = False
     clock = pygame.time.Clock()
 
     while not done:
-        # This limits the while loop to a max of 60 times per second.
-        # Leave this out and we will use all CPU we can.
         clock.tick(FPS)
-        #cnt+=0.016
 
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
@@ -97,17 +45,34 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN: 
                 pos=pygame.mouse.get_pos()
                 x,y=pos
-                x,y=c2p(x,y)
-                ball =Ball(screen,x,y)
+                x,y=toMath(x,y)
+                ball.reset(x,y)
         # Clear the screen and set the screen background
         screen.fill("white")
-        for p in ps:
-            p.draw()
-        ball.move()
-        ball.draw()
+        draw_grid(screen, grid)
+        ball.move(F,step)
+        
+        draw_ball(screen, ball)
         
 
         pygame.display.flip()
+
+def draw_line(screen,x,y,k):
+    x1,y1=x+step,y+step*k
+    x,y=toScreen(x,y)
+    x1,y1=toScreen(x1,y1)
+    c=CS[0]#randrange(0,len(CS))
+    pygame.draw.aaline(screen,c, [x,y], [x1, y1], True)
+
+def draw_grid(screen, grid):
+    for i in range(1,N):
+        for j in range(1,N):
+            x,y=toMath(j*SIZE,i*SIZE)
+            draw_line(screen,x,y,grid.slop(i,j))
+
+def draw_ball(screen, ball):
+    x,y=toScreen(ball.pos.real,ball.pos.imag)
+    pygame.draw.circle(screen, "red", [x, y], 6)
 
 if __name__ == "__main__":
     main()
