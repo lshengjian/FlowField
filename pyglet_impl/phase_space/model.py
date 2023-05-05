@@ -18,6 +18,9 @@ class SamplePoint:
         if args is None:
             self._args=SamplePoint.default_args
         self.update()
+    def reset(self,x,y):
+        self._pos=Vec2(x,y)
+        self.update()
 
 
     def __str__(self):
