@@ -1,6 +1,5 @@
 from typing import List
 import imgui
-#from imgui.integrations.pyglet import PygletFixedPipelineRenderer
 from imgui.integrations.pyglet import create_renderer
 
 class UISetting:
@@ -72,7 +71,7 @@ class UISettings(List):
         return out
 
 
-class UI:
+class _UI:
     def __init__(
         self, window, settings: UISettings, name: str = "Config", text: str = "Set pendulum parameters"
     ):
