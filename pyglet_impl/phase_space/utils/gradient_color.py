@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Callable,List
 
-  
+__all__=['linear_gradient','RGB_to_hex']  
 
 def hex_to_RGB(hex:str)->List:
   ''' "#FFFFFF" -> [255,255,255] '''
