@@ -1,64 +1,64 @@
-#from .ui import UISettings, _UI
-#from base.simulation import Simulation
-#import pyglet
-from pyglet.window import mouse,Window,FPSDisplay
+from pyglet.window import mouse,Window,key
+from typing import List
 from pyglet import clock
-from pyglet.math import Vec2
-from .model import Space,SamplePoint
-from .view import SapceView,Ball
+from .core import *
+from .views.config import *
+from .ui import UI
+
+from .views.grid import Grid
+from .views.ball import Ball
 
 class App(Window):
-    def __init__(
-        self,
-        width: int,
-        height: int,
-        name: str = "My Flow Field Demo",
-        dt: float = 1 / 60,
-    ):
-        super().__init__(width, height, name, resizable=True)
+    def __init__(self):
+        super().__init__(WIDTH, HEIGHT, "Flow Field Demo(by alex)", resizable=False)
         self.set_vsync(False)
-        clock.schedule_interval(self.update, dt)
-        self._fps_display = FPSDisplay(window=self)
-        
-        #self._UI = _UI(self, settings)
-        # start=Vec2(-4,-4)
-        # end=Vec2(7,4)
-        # self._space=Space(start,end,offset=Vec2(0.5,0.5))
-        self._space_view = SapceView((width,height))
-        #self._ball=Ball((width,height),start,end,SamplePoint(Vec2(0.5,3.8)))
-        # for sp in self._space:
-        #     self._space_view.add_point(sp)
+        clock.schedule_interval(self.update, 1/FPS)
+        self._fields:List[Field]=show_cases
+        self._case_idx=0
+        self.reset()
+
         
 
+        
+        
     def on_draw(self):
         self.clear()
-        self._fps_display.draw()
-        self._space_view.render()
-        # self._ball.render()
-        # self._UI.render()
+        #self._fps_display.draw()
+        self._grid.render()
+        self._ball.render()
+        self._UI.render()
         
-    #@window.event
+    def on_key_press(self, symbol, modifiers):
+        super().on_key_press(symbol, modifiers)
+        if symbol==key.LEFT or symbol==key.UP :
+            self._case_idx+=len(self._fields)-1
+        elif symbol==key.RIGHT or symbol==key.DOWN:
+            self._case_idx+=1
+        self._case_idx%= len(self._fields)
+        self.reset()
+        
     def on_mouse_press(self,x, y, button, modifiers):
-        #global pc
         if button & mouse.RIGHT:
-            pass
-            #self._ball.reset(x,y)
-            #pc=(x,y)
+            px,py=self._ball.get_screen_pos(x,y)
+            self._sp.reset(px,py)
+            self._ball.moveto(self._sp)
             
+    def reset(self):
+        self._field=self._fields[self._case_idx]
+        self._field.reset()
+        self._grid=Grid(self._field,WIDTH, HEIGHT)
+        self._sp=SamplePoint(self._field,0,4)
+        self._ball=Ball(self._field)
+        self._UI = UI(self, self._field, "Config",  "Set Parameters")
+        
 
     def update(self, dt):
-        pass
-        #args=SamplePoint.default_args
-        
-        # if self._UI.settings.get_changed("K1"):
-            
-        #     args["K1"]=self._UI.settings.get_value("K1")
-        #     self._space.reset()
-        #     self._space_view.reset()
-        #     #print(self._UI.settings.get_value("K1"))
-        # if self._UI.settings.get_changed("K2"):
-        #     #print(self._UI.settings.get_value("K2"))
-        #     args["K2"]=self._UI.settings.get_value("K2")
-        #     self._space.reset()
-        #     self._space_view.reset()
-        # self._ball.move(dt)
+        self._sp.update()
+        self._ball.moveto(self._sp)
+        for key,arg in self._field._args.items():
+            if self._UI.settings.get_changed(key):
+                arg.value=self._UI.settings.get_value(key)
+                if key!='step':
+                    self.reset()
+
+

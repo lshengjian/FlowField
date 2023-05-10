@@ -1,68 +1,69 @@
-from dataclasses import dataclass
-from typing import Dict
 
-from phase_space.utils import Bound
-#User = collections.namedtuple('User', 'name age id')
-
-@dataclass
-class ArgInfo:
-    """可变参数定义."""
-    name: str
-    value: float
-    low: float
-    high: float
-    step: float=0 
-    def __post_init__(self):
-        if self.step<=0:
-            self.step==(self.high-self.low)/10
-
-@dataclass
-class Measure:
-    """坐标轴度量的物理量信息."""
-    name: str
-    bound:Bound
-    numSampling:int =10
-
-    def __post_init__(self):
-        self._ds=[self.bound.low]
-        if self.numSampling<2:
-            self.numSampling=2
-        self._step=(self.bound.high-self.bound.low)/(self.numSampling-1)
-        for i in range(1,self.numSampling):
-            self._ds.append(self.bound.low+i*self._step)
-    
-    def get_position(self,index):
-        return self._step*index+self.bound.low
-
-    def __iter__(self):
-        yield from self._ds
-
-
+from typing import Dict,List
+from .data_def import *
 
 class Field:
     def __init__(
         self,
         x_measure: Measure,
-        y_measure: Measure
+        y_measure: Measure,
+        isTwoOrder=False,
+        
         
     ):
-        self._xs=x_measure
-        self._ys=y_measure
-        self._args:Dict[str,ArgInfo]=None
+        self.name=type(self).__name__
+        self.isTwoOrder=isTwoOrder
+        self.description=''
+        self.set_description()
+        self.x_axis=x_measure
+        self.y_axis=y_measure
+        self._args:Dict[str,ArgInfo]={'step':ArgInfo('step',0.02,0.01,0.5,0.01)}
         self.config_args()
+        self.reset()
+
+    def reset(self):
         self._ds=[]
         i,j=0,0
-        for y in  self._ys:
+        for y in  self.y_axis:
             j=0
-            for x in  self._xs:
-                self._ds.append((j,i,self.slop(x,y)))
+            for x in  self.x_axis:
+                s=self.gradient(x,y)
+                if self.isTwoOrder:
+                    s=s/y if abs(y)>0 else 9999
+                self._ds.append((i,j,s))
                 j+=1
             i+=1
+    def force(self,x,y): 
+        x=self.x_axis.bound.force(x)
+        y=self.y_axis.bound.force(y)  
+        return x,y  
+        
+    @property
+    def size(self):
+        dx=self.x_axis.bound.distance
+        dy=self.y_axis.bound.distance
+        return (dx,dy)
+    
+    def arg_value(self,name:str):
+        return self._args[name].value
+    def get_pos(self,row:int,col:int):
+        px=self.x_axis.get_position(col)
+        py=self.y_axis.get_position(row)
+        return (px,py)
+    
+    def set_args(self,args:List[ArgInfo]):
+        for arg in args:
+            self._args[arg.name]=arg
+
 
     def __iter__(self):
         yield from self._ds
+
+    def set_description(self):
+        pass
+        
     def config_args(self):
         pass
 
-    def slop(self,x:float,y:float):
+    def gradient(self,x:float,y:float):
         pass

@@ -2,7 +2,7 @@ from typing import List, Tuple
 import random
 import numpy as np
 from numba import jit
-from phase_space.view import Simulation
+from phase_space.core.view import Simulation
 from base.app import App
 from base.ui import UI, UISetting, UISettings
 from pyglet.window import Window

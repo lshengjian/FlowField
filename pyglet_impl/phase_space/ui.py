@@ -1,7 +1,7 @@
 from typing import List
 import imgui
 from imgui.integrations.pyglet import create_renderer
-
+from .core import Field
 class UISetting:
     def __init__(
         self,
@@ -13,7 +13,7 @@ class UISetting:
         step: float = None,
         format: str = None,
         name: str = "No name",
-        description: str = "No description",
+        #description: str = "No description",
     ):
         self.dtype = dtype
         self.type = type
@@ -23,7 +23,7 @@ class UISetting:
         self.step = step
         self.format = format
         self.name = name
-        self.description = description
+        #self.description = description
         self.changed = False
 
     def set_config(self):
@@ -32,7 +32,7 @@ class UISetting:
             self.changed, self.value = imgui.input_int(self.description, self.value)
         elif self.dtype == "float" and self.type == "slider":
             self.changed, self.value = imgui.slider_float(
-                self.description, self.value, self.min, self.max, self.format, self.step
+                self.name, self.value, self.min, self.max, self.format, self.step
             )
         else:
             raise Exception("Unknown type")
@@ -40,10 +40,25 @@ class UISetting:
 
 
 class UISettings(List):
-    def __init__(self, settings: List[UISetting]):
+    def __init__(self, field:Field):
+        settings=[]
+        for key,arg in field._args.items():
+            settings.append(UISetting(
+                dtype="float",
+                type="slider",
+                value=arg.value,
+                min=arg.low,
+                max=arg.high,
+                step=arg.step,
+                format="%.2f",
+                name=key
+            ))
+            #arg.attach(self.callbak)
         self.settings = settings
         self._index = 0
-
+    #def callbak(self,arg):
+    #    print(arg.name)
+        
     def __iter__(self):
         for setting in self.settings:
             yield setting
@@ -71,10 +86,11 @@ class UISettings(List):
         return out
 
 
-class _UI:
+class UI:
     def __init__(
-        self, window, settings: UISettings, name: str = "Config", text: str = "Set pendulum parameters"
+        self, window, field:Field, name: str = "Config", text: str = "Set pendulum parameters"
     ):
+        settings: UISettings=UISettings(field)
         imgui.create_context()
         #self.impl = PygletFixedPipelineRenderer(window)
         self.impl = create_renderer(window)
@@ -83,6 +99,9 @@ class _UI:
         self.settings = settings
         self.name = name
         self.text = text
+
+
+
 
     def render(self):
         #imgui.render()

@@ -1,0 +1,7 @@
+from ..fields import SPRING,FALL,FISH,PENDULUM
+
+WIDTH = 1024
+HEIGHT = 768
+FPS = 60
+
+show_cases=[FALL,FISH,SPRING,PENDULUM]
