@@ -1,6 +1,28 @@
 from dataclasses import dataclass
 from phase_space.utils import Bound
 #User = collections.namedtuple('User', 'name age id')
+@dataclass
+class Point:
+    x:int
+    y:int
+    def __post_init__(self):
+        self._data=[self.x,self.y]
+    def __iter__(self):
+        yield from self._data
+@dataclass
+class Size:
+    width:int
+    height:int  
+    
+    def __post_init__(self):
+        self._data=[self.width,self.height]
+    def __iter__(self):
+        yield from self._data
+@dataclass   
+class Viewport:
+    start:Point
+    size:Size
+
 
 @dataclass
 class ArgInfo:

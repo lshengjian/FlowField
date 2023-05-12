@@ -6,14 +6,14 @@ class SamplePoint:
     #default_args:Dict[str,float]={'K1':2.0,'K2':1}
 
     def __init__(self,f:Field,x,y):
-        self._x=x
-        self._y=y
+        self.x=x
+        self.y=y
         self._field=f
         self.update()
 
     def reset(self,x,y):
-        self._x=x
-        self._y=y
+        self.x=x
+        self.y=y
         
 
 
@@ -23,7 +23,7 @@ class SamplePoint:
     
     def _update1(self,step):#step is dx
         slop=self._field.gradient
-        x1,y1=self._x,self._y
+        x1,y1=self.x,self.y
         s1=slop(x1,y1)
         x2,y2=x1+step,y1+step*s1
         s2=slop(x2,y2)
@@ -36,7 +36,7 @@ class SamplePoint:
 
     def _update2(self,step):#step is delta_time
         slop=self._field.gradient
-        x1,y1=self._x,self._y
+        x1,y1=self.x,self.y
         s1=slop(x1,y1)
         x2,y2=x1+step*y1,y1+step*s1
         s2=slop(x2,y2)
@@ -54,15 +54,15 @@ class SamplePoint:
             x,y=self._update1(step)
         else:
             x,y=self._update2(step)
-        self._x,self._y=self._field.force(x,y)
+        self.x,self.y=self._field.force(x,y)
 
 
     @property
     def position(self):
-        return (self._x,self._y)
+        return (self.x,self.y)
   
 
     @property
     def degree(self):
-        a = -atan(self._field.gradient(self._x,self._y))
+        a = -atan(self._field.gradient(self.x,self.y))
         return a*180.0/pi
