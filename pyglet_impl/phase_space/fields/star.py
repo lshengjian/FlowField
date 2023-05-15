@@ -9,7 +9,7 @@ class Star(Field):
     def set_description(self):
         self.description='velocity: v | dv/dt=a+x-kv'
     
-    def gradient(self,x:float,y:float):
+    def constraint(self,x:float,y:float):
         return self.arg_value('a')+x-self.arg_value('k')*y
         
 

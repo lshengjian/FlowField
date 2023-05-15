@@ -1,34 +1,43 @@
 from abc import ABC, abstractmethod
+from ..utils import *
 from ..core.data_def import *
 from pyglet import shapes,graphics
 from phase_space.core import Measure,Field,ArgInfo
 from .sample_point import SamplePoint
-
+WIDTH = 1024
+HEIGHT = 768
+FPS = 60
+default_viewport=Viewport(Point(0,0),Size(WIDTH,HEIGHT))
 class View(ABC):
-
-    def __init__(self,field:Field,viewport:Viewport,bg_color=None):
-        
+    def __init__(self,field:Field,axis:str='*',viewport:Viewport=default_viewport):#,bg_color=None
         self._viewport=viewport
         self._field=field
-        self._bg_color=bg_color
-        self._batch = graphics.Batch()
-        self.reset()
-      
+        if '*'==axis:
+            axis=field.get_measure_names()
+        ms=axis.split(',')
+        self.x_axis=field.get_measure(ms[0])
+        self.y_axis=field.get_measure(ms[1])
+        #self._bg_color=bg_color
+        w,h=self._viewport.size
+        ox,oy=self._viewport.start
+        kx=w/self.x_axis.bound.distance
+        ky=h/self.y_axis.bound.distance
+        lx,ly=self.x_axis.bound.low,self.y_axis.bound.low
+        self._ox,self._oy=ox,oy
+        self._kx,self._ky=kx,ky
+        self._lx,self._ly=lx,ly
+        self._w,self._h=w,h
+        
+
+
+    #@abstractmethod  
     def moveto(self,sp:SamplePoint):
         pass
 
     def reset(self):
-        w,h=self._viewport.size
-        ox,oy=self._viewport.start
-        kx=w/self._field.x_axis.bound.distance
-        ky=h/self._field.y_axis.bound.distance
-        lx,ly=self._field.x_axis.bound.low,self._field.y_axis.bound.low
-        self._ox,self._oy=ox,oy
-        self._kx,self._ky=kx,ky
-        self._lx,self._ly=lx,ly
-        
-        if self._bg_color is not  None:
-            self._bg=shapes.Rectangle(lx,ly,w,h,color=self._bg_color ,batch=self._batch)
+        self._batch = graphics.Batch()
+        # if self._bg_color is not  None:
+        #     self._bg=shapes.Rectangle(self._lx,self._ly,self.w,self.h,color=self._bg_color ,batch=self._batch)
     
 
     def render(self):

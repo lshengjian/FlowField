@@ -1,29 +1,26 @@
 from math import atan,pi
-
-from .field import Field
+from .data_def import Vector
+from .view import View
 
 class SamplePoint:
     #default_args:Dict[str,float]={'K1':2.0,'K2':1}
 
-    def __init__(self,f:Field,x,y):
-        self.x=x
-        self.y=y
-        self._field=f
+    def __init__(self,v:View,data:Vector):
+        self._state:Vector=data
+        self._view:View=v
+        self._field=v._field
         self.update()
 
-    def reset(self,x,y):
-        self.x=x
-        self.y=y
+    def reset(self,data:Vector):
+        self._state=Vector
         
 
-
-
-    def __str__(self):
-        return f"({self._pos.x:.2f},{self._pos.y:.2f})"
+    # def __str__(self):
+    #     return f"({self._data.x:.2f},{self._data.y:.2f})"
     
     def _update1(self,step):#step is dx
-        slop=self._field.gradient
-        x1,y1=self.x,self.y
+        slop=self._field.constraint
+        x1,y1=self._state.get_value(self._view.x_axis.name,self._view.y_axis.name)
         s1=slop(x1,y1)
         x2,y2=x1+step,y1+step*s1
         s2=slop(x2,y2)
@@ -35,8 +32,8 @@ class SamplePoint:
         return x1+step,y1+step*s
 
     def _update2(self,step):#step is delta_time
-        slop=self._field.gradient
-        x1,y1=self.x,self.y
+        slop=self._field.constraint
+        x1,y1=self._state.get_value(self._view.x_axis.name,self._view.y_axis.name)
         s1=slop(x1,y1)
         x2,y2=x1+step*y1,y1+step*s1
         s2=slop(x2,y2)
@@ -49,20 +46,23 @@ class SamplePoint:
     
     def update(self):
         step:float=self._field.arg_value('step')
+       
         x,y=0,0
         if not self._field.isTwoOrder:
             x,y=self._update1(step)
         else:
             x,y=self._update2(step)
-        self.x,self.y=self._field.force(x,y)
+        x,y=self._view.limit(x,y)
+        self._state.set_data(x,y)
 
 
     @property
-    def position(self):
-        return (self.x,self.y)
+    def state(self):
+        return self._state
   
 
     @property
     def degree(self):
-        a = -atan(self._field.gradient(self.x,self.y))
+        x,y=self._state.get_value(self._view.x_axis.name,self._view.y_axis.name)
+        a = -atan(self._field.constraint(x,y)) #todo
         return a*180.0/pi

@@ -1,27 +1,44 @@
+#import numpy as np
 from dataclasses import dataclass
 from phase_space.utils import Bound
 #User = collections.namedtuple('User', 'name age id')
-@dataclass
-class Point:
-    x:int
-    y:int
-    def __post_init__(self):
-        self._data=[self.x,self.y]
+
+
+class Vector:
+    def __init__(self,props:str='x1,x2'):
+        ss=props.split(',')
+        dim=len(ss)
+        self._data=[0]*dim #np.zeros(n)
+        self._dim=dim
+        self._props=ss
+        self._prop_map={}
+        for i in range(dim):
+            key=ss[i]
+            self._prop_map[key]=i
+
+    def get_value(self,name):
+        idx=self._prop_map[name]
+        return self._data[idx]
+    def set_data(self,*ds):
+        n=min(self._dim,len(ds))
+        for i in range(n):
+            self._data[i]=ds[i]
+
+    def __getattr__(self, name):
+        #print(name)
+        if name not in self._prop_map.keys():
+            return
+        idx=self._prop_map[name]
+        return self._data[idx]
+         
+    # def __setattr__(self, name, value):
+    #     if name not in self._prop_map.keys():
+    #         return
+    #     idx=self._prop_map[name]
+    #     self._data[idx] = value
+
     def __iter__(self):
         yield from self._data
-@dataclass
-class Size:
-    width:int
-    height:int  
-    
-    def __post_init__(self):
-        self._data=[self.width,self.height]
-    def __iter__(self):
-        yield from self._data
-@dataclass   
-class Viewport:
-    start:Point
-    size:Size
 
 
 @dataclass
@@ -32,6 +49,7 @@ class ArgInfo:
     low: float
     high: float
     step: float=0 
+    desc: str=None
     '''
     def __init__(
         self,
@@ -84,14 +102,17 @@ class Measure:
     """坐标轴度量的物理量信息."""
     name: str
     bound:Bound
-    numSampling:int =10
+    num_sampling:int =10
 
+    @property
+    def is_sampling(self):
+        return self.num_sampling>1
     def __post_init__(self):
         self._ds=[self.bound.low]
-        if self.numSampling<2:
-            self.numSampling=2
-        self._step=(self.bound.high-self.bound.low)/(self.numSampling-1)
-        for i in range(1,self.numSampling):
+        if self.num_sampling<2:
+            self.num_sampling=2
+        self._step=(self.bound.high-self.bound.low)/(self.num_sampling-1)
+        for i in range(1,self.num_sampling):
             self._ds.append(self.bound.low+i*self._step)
     
     def get_position(self,index):

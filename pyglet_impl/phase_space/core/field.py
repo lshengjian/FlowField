@@ -1,63 +1,75 @@
-
 from typing import Dict,List
+from ..utils import State
 from .data_def import *
 
 class Field:
     def __init__(
         self,
-        x_measure: Measure,
-        y_measure: Measure,
+        measures: List[Measure],
         isTwoOrder=False,
-        
-        
+        # x_index=0,
+        # y_index=1
     ):
         self.name=type(self).__name__
         self.isTwoOrder=isTwoOrder
         self.description=''
+        self.measures=measures
+        # self.x_axis=measures[x_index]
+        # self.y_axis=measures[y_index]
         self.set_description()
-        self.x_axis=x_measure
-        self.y_axis=y_measure
+
         self._args:Dict[str,ArgInfo]={'step':ArgInfo('step',0.02,0.01,0.5,0.01)}
         self.config_args()
         self.reset()
-
+    
+    def get_state_zero(self):
+        names=self.get_measure_names()
+        return Vector(names)
+    
+    def get_measure(self,name):
+        for m in self.measures:
+            if m.name==name:
+                return m
+    def get_sampleing_measures(self):
+        return list(
+            filter(lambda item:item.is_sampling,
+            self.measures)
+        )
+    def get_measure_names(self):
+        return ','.join(map(
+            lambda item:item.name,
+            self.measures
+        ))
+      
     def reset(self):
-        self._ds=[]
-        i,j=0,0
-        for y in  self.y_axis:
-            j=0
-            for x in  self.x_axis:
-                s=self.gradient(x,y)
-                if self.isTwoOrder:
-                    s=s/y if abs(y)>0 else 9999
-                self._ds.append((i,j,s))
-                j+=1
-            i+=1
-    def force(self,x,y): 
-        x=self.x_axis.bound.force(x)
-        y=self.y_axis.bound.force(y)  
-        return x,y  
+        pass
+
+    def limit(self,xs): 
+        rt=[]
+        for i,m in enumerate(self.measures):
+            rt.append(m.bound.limit(xs[i]))
+        # x=self.x_axis.bound.limit(x)
+        # y=self.y_axis.bound.limit(y)  
+        return rt 
         
-    @property
-    def size(self):
-        dx=self.x_axis.bound.distance
-        dy=self.y_axis.bound.distance
-        return (dx,dy)
+    # @property
+    # def size(self):
+    #     dx=self.x_axis.bound.distance
+    #     dy=self.y_axis.bound.distance
+    #     return (dx,dy)
     
     def arg_value(self,name:str):
         return self._args[name].value
-    def get_pos(self,row:int,col:int):
-        px=self.x_axis.get_position(col)
-        py=self.y_axis.get_position(row)
-        return (px,py)
+    
+
     
     def set_args(self,args:List[ArgInfo]):
         for arg in args:
             self._args[arg.name]=arg
 
 
-    def __iter__(self):
-        yield from self._ds
+    # def __iter__(self):
+    #     yield from self._ds
 
     def set_description(self):
         pass
@@ -65,5 +77,5 @@ class Field:
     def config_args(self):
         pass
 
-    def gradient(self,x:float,y:float):
+    def constraint(self,state:Vector):
         pass

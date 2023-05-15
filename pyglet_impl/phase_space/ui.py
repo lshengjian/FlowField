@@ -13,7 +13,7 @@ class UISetting:
         step: float = None,
         format: str = None,
         name: str = "No name",
-        #description: str = "No description",
+        description: str = None,
     ):
         self.dtype = dtype
         self.type = type
@@ -23,16 +23,17 @@ class UISetting:
         self.step = step
         self.format = format
         self.name = name
-        #self.description = description
+        self.description = description
         self.changed = False
 
     def set_config(self):
+        desc=self.name if self.description is None else self.description
         """Missing some combinations"""
         if self.dtype == "int" and self.type == "input":
             self.changed, self.value = imgui.input_int(self.description, self.value)
         elif self.dtype == "float" and self.type == "slider":
             self.changed, self.value = imgui.slider_float(
-                self.name, self.value, self.min, self.max, self.format, self.step
+                desc, self.value, self.min, self.max, self.format, self.step
             )
         else:
             raise Exception("Unknown type")
@@ -51,7 +52,8 @@ class UISettings(List):
                 max=arg.high,
                 step=arg.step,
                 format="%.2f",
-                name=key
+                name=key,
+                description=arg.desc
             ))
             #arg.attach(self.callbak)
         self.settings = settings

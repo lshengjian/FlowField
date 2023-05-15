@@ -1,16 +1,15 @@
-from ..core.field  import Field
-from ..core.field import ArgInfo
+from ..core.field  import Field,ArgInfo
 
 class Fish(Field):
     def config_args(self):
         self.set_args([
-            ArgInfo('a',4,1,5,0.5),
-            ArgInfo('b',2,0.5,3,0.5),
-            ArgInfo('h',0.3,0.1,3,0.5)
+            ArgInfo('a',5,3,5,0.1),
+            ArgInfo('b',1,0.5,2,0.1),
+            ArgInfo('h',0.1,0,0.3,0.01)
         ])
 
 
-    def gradient(self,x:float,y:float):
+    def constraint(self,x:float,y:float,z:float=0):
         return self.arg_value('a')*y-self.arg_value('b')*y*y-self.arg_value('h')
         
     def set_description(self):
