@@ -19,9 +19,9 @@ class Pole(View):
         #print('Pole reset')
 
     
-    def moveto(self,sp:SamplePoint):
-        px,_,_=sp.state
-        self.rope.rotation=px/pi*180
+    # def moveto(self,sp:SamplePoint):
+    #     px,_,_=sp.state
+    #     self.rope.rotation=px/pi*180
 
        
 

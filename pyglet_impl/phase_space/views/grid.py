@@ -4,11 +4,13 @@ from pyglet.text import Label
 from ..core import *
 from phase_space.utils import linear_gradient
 from math import pi,atan
-
+from ..core.sample_point import SamplePoint
 class Grid(View):
     N_COLORS:int = 8
     def reset(self):
         super().reset()
+        self.sp:SamplePoint=SamplePoint(self,self._field.get_state_zero())
+        self._body=shapes.Circle(100,100,6,color=(255, 255, 0),batch=self._batch)
         self._tips=[
             Label('TIP: ',font_size=20,color=(0,255,8,210),x=20,y=64,batch=self._batch),
             Label('arrow key show onather case',font_size=18,color=(5,235,28,210),x=20,y=44,batch=self._batch),
@@ -28,13 +30,26 @@ class Grid(View):
         for y in  self.y_axis:
             j=0
             for x in  self.x_axis:
-                acc,isTwoOrder=self._field.constraint(x,y)
-                if isTwoOrder:
-                    s=acc/y if abs(y)>0 else 1e16
+                data=self._field.get_state_zero()
+                data.set_data(x,y)
+                s=self._field.constraint(data)
+                if self._field.isTwoOrder:
+                    s=s/y if abs(y)>0 else 1e16
                 self.add_line((i,j,s))
                 j+=1
             i+=1
-            
+    def on_click(self,sx,sy):
+        x,y=self.get_space_pos(sx,sy)
+        self.sp.state.set_value(self.x_axis.name,x)
+        self.sp.state.set_value(self.y_axis.name,y)
+
+
+    def update(self):
+        self.sp.update()
+        px=self.sp.state.get_value(self.x_axis.name)
+        py=self.sp.state.get_value(self.y_axis.name)
+        x,y=self.get_pos(px,py)
+        self._body.position=(x,y)            
         
     def rotate(self, slop, shape:shapes.Rectangle,auto_color=False):
         a = -atan(slop)

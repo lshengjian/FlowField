@@ -12,6 +12,7 @@ class App(Window):
         clock.schedule_interval(self.update, 1/FPS)
         self._case_idx=0
         self.views=get_views()
+        
         self.reset()
         
       
@@ -33,23 +34,25 @@ class App(Window):
         
     def on_mouse_press(self,x, y, button, modifiers):
         if button & mouse.RIGHT:
-            px,py=self.views[self._field.name][1].get_space_pos(x,y)
-            self._sp.reset(State(px,py,0))
+            self.grid.on_click(x,y)
+            
+            # px,py=.get_space_pos(x,y)
+            # self._sp.reset(State(px,py,0))
 
             
     def reset(self):
         self._field=CASES[self._case_idx]
         self._field.reset()
-        self._sp=SamplePoint(self._field,State(0,0,0))
+        self.grid=self.views[self._field.name][0]
+        #self._sp=SamplePoint(self._field,State(0,0,0))
         for  v in self.views[self._field.name]:
             v.reset()
         self._UI = UI(self, self._field, "Config",  "Set Parameters")
         
 
     def update(self, dt):
-        self._sp.update()
         for  v in self.views[self._field.name]:
-            v.moveto(self._sp)
+            v.update()
 
         for key,arg in self._field._args.items():
             if self._UI.settings.get_changed(key):

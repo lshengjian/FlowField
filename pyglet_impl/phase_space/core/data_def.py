@@ -19,6 +19,11 @@ class Vector:
     def get_value(self,name):
         idx=self._prop_map[name]
         return self._data[idx]
+    
+    def set_value(self,name,val):
+        idx=self._prop_map[name]
+        self._data[idx]=val
+
     def set_data(self,*ds):
         n=min(self._dim,len(ds))
         for i in range(n):

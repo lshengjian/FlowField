@@ -3,7 +3,7 @@ from ..utils import *
 from ..core.data_def import *
 from pyglet import shapes,graphics
 from phase_space.core import Measure,Field,ArgInfo
-from .sample_point import SamplePoint
+
 WIDTH = 1024
 HEIGHT = 768
 FPS = 60
@@ -28,10 +28,14 @@ class View(ABC):
         self._lx,self._ly=lx,ly
         self._w,self._h=w,h
         
+    def get_vec_zero(self):
+        ns=f'{self.x_axis.name},{self.y_axis.name}'
+        return Vector(ns)
 
-
+    def on_click(self,sx,sy):
+        pass
     #@abstractmethod  
-    def moveto(self,sp:SamplePoint):
+    def update(self):
         pass
 
     def reset(self):
