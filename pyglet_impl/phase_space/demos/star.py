@@ -1,7 +1,7 @@
-from ..core.field  import Field
-from ..core.field import ArgInfo
+from ..core.space  import Space
+from ..core.space import ArgInfo
 
-class Star(Field):
+class Star(Space):
 
     def config_args(self):
         self.set_args([ArgInfo('a',2,1,6,0.1),ArgInfo('k',2,1,6,0.1)])

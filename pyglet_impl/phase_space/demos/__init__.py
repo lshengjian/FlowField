@@ -1,11 +1,11 @@
-from .air_drag import *
-from .fish import *
-from .pendulum import *
-from .spring  import *
+from .fall import *
+# from .fish import *
+# from .pendulum import *
+# from .spring  import *
 
 from ..core import Bound,Measure
 
-FALL=AirDrag([
+FALL=Fall([
     Measure('time',Bound(0,10),41),
     Measure('velocity',Bound(3,7),41)]
     )

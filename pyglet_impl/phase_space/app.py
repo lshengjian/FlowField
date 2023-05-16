@@ -1,7 +1,7 @@
 from pyglet.window import mouse,Window,key
 from pyglet import clock
 from .core import *
-from .fields import *
+from .demos import *
 from .views import *
 from .ui import UI
 
@@ -19,7 +19,7 @@ class App(Window):
         
     def on_draw(self):
         self.clear()
-        for  v in self.views[self._field.name]:
+        for  v in self.views[self._field._name]:
             v.render()
         self._UI.render()
         
@@ -43,15 +43,15 @@ class App(Window):
     def reset(self):
         self._field=CASES[self._case_idx]
         self._field.reset()
-        self.grid=self.views[self._field.name][0]
+        self.grid=self.views[self._field._name][0]
         #self._sp=SamplePoint(self._field,State(0,0,0))
-        for  v in self.views[self._field.name]:
+        for  v in self.views[self._field._name]:
             v.reset()
         self._UI = UI(self, self._field, "Config",  "Set Parameters")
         
 
     def update(self, dt):
-        for  v in self.views[self._field.name]:
+        for  v in self.views[self._field._name]:
             v.update()
 
         for key,arg in self._field._args.items():

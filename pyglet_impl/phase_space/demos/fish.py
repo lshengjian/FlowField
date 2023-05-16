@@ -1,6 +1,6 @@
-from ..core.field  import Field,ArgInfo
+from ..core.space  import Space,ArgInfo
 
-class Fish(Field):
+class Fish(Space):
     def config_args(self):
         self.set_args([
             ArgInfo('a',5,3,5,0.1),

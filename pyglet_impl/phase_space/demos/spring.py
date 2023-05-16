@@ -1,6 +1,6 @@
-from ..core.field  import Field,ArgInfo
+from ..core.space  import Space,ArgInfo
 
-class Spring(Field):
+class Spring(Space):
 
     def config_args(self):
         self.set_args([ArgInfo('a',4,0,6,0.2),ArgInfo('b',5,2,5,0.5)])

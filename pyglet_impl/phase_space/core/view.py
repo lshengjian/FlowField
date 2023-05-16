@@ -1,22 +1,22 @@
 from abc import ABC, abstractmethod
 from ..utils import *
-from ..core.data_def import *
+from .state import *
 from pyglet import shapes,graphics
-from phase_space.core import Measure,Field,ArgInfo
+from phase_space.core import Measure,Space,ArgInfo
 
 WIDTH = 1024
 HEIGHT = 768
 FPS = 60
 default_viewport=Viewport(Point(0,0),Size(WIDTH,HEIGHT))
 class View(ABC):
-    def __init__(self,field:Field,axis:str='*',viewport:Viewport=default_viewport):#,bg_color=None
+    def __init__(self,space:Space,axis:str='*',viewport:Viewport=default_viewport):#,bg_color=None
         self._viewport=viewport
-        self._field=field
-        if '*'==axis:
-            axis=field.get_measure_names()
-        ms=axis.split(',')
-        self.x_axis=field.get_measure(ms[0])
-        self.y_axis=field.get_measure(ms[1])
+        self._space:Space=space
+        ms=space.names
+        if axis!='*':
+            ms=axis.split(' ')
+        self.x_axis:Measure=space.get_measure(ms[0])
+        self.y_axis:Measure=space.get_measure(ms[1])
         #self._bg_color=bg_color
         w,h=self._viewport.size
         ox,oy=self._viewport.start
@@ -30,7 +30,7 @@ class View(ABC):
         
     def get_vec_zero(self):
         ns=f'{self.x_axis.name},{self.y_axis.name}'
-        return Vector(ns)
+        return State(ns)
 
     def on_click(self,sx,sy):
         pass

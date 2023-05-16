@@ -5,14 +5,14 @@ from random import random,randint
 
 class Pilot(View):
     
-    def __init__(self,field:Field,viewport:Viewport=default_viewport,bg_color=None):
+    def __init__(self,field:Space,viewport:Viewport=default_viewport,bg_color=None):
         super().__init__(field,viewport,bg_color)
    
     def reset(self):
         super().reset()
         w,h=self._viewport.size
         ox,oy=self._viewport.start
-        xb,yb=self._field.measures[0].bound,self._field.measures[1].bound
+        xb,yb=self._space._measures[0].bound,self._space._measures[1].bound
         kx=w/xb.distance
         ky=h/yb.distance
         lx,ly=xb.low,yb.low
@@ -22,7 +22,7 @@ class Pilot(View):
         self.w,self.h=w,h
         time_bound=xb
         pos_bound=yb
-        ns=self._field.measures[0].num_sampling
+        ns=self._space._measures[0].num_sampling
         DX=time_bound.distance/(ns-1)
 
        
@@ -40,7 +40,7 @@ class Pilot(View):
         dx=0
         while t2<time_bound.high:
             t1,y1,v1=state #time,pos,vol
-            a1=self._field.constraint(t1,y1,v1)
+            a1=self._space.constraint(t1,y1,v1)
             t2=t1+step
             v2=v1+step*a1
             y2=y1+step*v2

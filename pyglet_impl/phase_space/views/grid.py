@@ -9,18 +9,10 @@ class Grid(View):
     N_COLORS:int = 8
     def reset(self):
         super().reset()
-        self.sp:SamplePoint=SamplePoint(self,self._field.get_state_zero())
-        self._body=shapes.Circle(100,100,6,color=(255, 255, 0),batch=self._batch)
-        self._tips=[
-            Label('TIP: ',font_size=20,color=(0,255,8,210),x=20,y=64,batch=self._batch),
-            Label('arrow key show onather case',font_size=18,color=(5,235,28,210),x=20,y=44,batch=self._batch),
-            Label('right mouse reset the ball',font_size=18,color=(5,235,28,210),x=20,y=24,batch=self._batch)
-        ]
+        self.sp:SamplePoint=SamplePoint(self)
+        
         w,h=self._viewport.size
-        self._name=Label(self._field.name,font_size=20,x=20,y=h-30,batch=self._batch)
-        self._ylable=Label(self.y_axis.name,font_size=20,x=20,y=h/2,batch=self._batch)
-        self._xlable=Label(self.x_axis.name,font_size=20,x=w/2,y=20,batch=self._batch)
-        self._desc=Label(self._field.description,font_size=16,color=(255,255,255,255),x=w*0.618,y=h-32,batch=self._batch)
+        self._body=shapes.Circle(w/2,h/2,6,color=(255, 255, 0),batch=self._batch)
 
         self._lines=[]
         self._colors=linear_gradient('#0000FF','#FF0000',self.N_COLORS)
@@ -30,24 +22,27 @@ class Grid(View):
         for y in  self.y_axis:
             j=0
             for x in  self.x_axis:
-                data=self._field.get_state_zero()
-                data.set_data(x,y)
-                s=self._field.constraint(data)
-                if self._field.isTwoOrder:
+                data=self._space.get_state_zero()
+                data.set_data(x,y) #todo
+                s=self._space.constraint(data)
+                if not self._space._isFirstOrder:
                     s=s/y if abs(y)>0 else 1e16
                 self.add_line((i,j,s))
                 j+=1
             i+=1
     def on_click(self,sx,sy):
         x,y=self.get_space_pos(sx,sy)
-        self.sp.state.set_value(self.x_axis.name,x)
-        self.sp.state.set_value(self.y_axis.name,y)
+        data=list(self.sp.state)
+        data[self.sp._x_index]=x
+        data[self.sp._y_index]=y
+        self.sp.state.set_data(*data)
 
 
     def update(self):
+        
         self.sp.update()
-        px=self.sp.state.get_value(self.x_axis.name)
-        py=self.sp.state.get_value(self.y_axis.name)
+        px=self.sp.state.value(self.x_axis.name)
+        py=self.sp.state.value(self.y_axis.name)
         x,y=self.get_pos(px,py)
         self._body.position=(x,y)            
         
@@ -64,8 +59,8 @@ class Grid(View):
             n=self.N_COLORS-1
         shape.color=self._colors[n]
     def get_pos_by_indexs(self,row:int,col:int):
-        px=self.x_axis.get_position(col)
-        py=self.y_axis.get_position(row)
+        px=self.x_axis.value_at(col)
+        py=self.y_axis.value_at(row)
         return (px,py)
     def add_line(self,sp:Tuple): #sp:(row,col,slop)
         x,y=self.get_pos_by_indexs(sp[0],sp[1])      

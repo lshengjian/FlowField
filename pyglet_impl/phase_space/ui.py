@@ -1,7 +1,7 @@
 from typing import List
 import imgui
 from imgui.integrations.pyglet import create_renderer
-from .core import Field
+from .core import Space
 class UISetting:
     def __init__(
         self,
@@ -41,7 +41,7 @@ class UISetting:
 
 
 class UISettings(List):
-    def __init__(self, field:Field):
+    def __init__(self, field:Space):
         settings=[]
         for key,arg in field._args.items():
             settings.append(UISetting(
@@ -90,7 +90,7 @@ class UISettings(List):
 
 class UI:
     def __init__(
-        self, window, field:Field, name: str = "Config", text: str = "Set pendulum parameters"
+        self, window, field:Space, name: str = "Config", text: str = "Set pendulum parameters"
     ):
         settings: UISettings=UISettings(field)
         imgui.create_context()
