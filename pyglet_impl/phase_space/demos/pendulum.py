@@ -1,4 +1,4 @@
-from ..core.space  import Space,ArgInfo
+from ..core.space  import Space,ArgInfo,State
 from math import sin
 
 class Pendulum(Space):
@@ -9,7 +9,8 @@ class Pendulum(Space):
     def set_description(self):
         self.description="angle : q | velocity: q' | q''=-a.sin(q)-b.q'"
     
-    def constraint(self,x:float,y:float,z:float=0):
+    def constraint(self,state:State):
+        x,y=state
         return -self.arg_value('a')*sin(x)-self.arg_value('b')*y
         
 

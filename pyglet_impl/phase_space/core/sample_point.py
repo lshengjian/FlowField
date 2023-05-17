@@ -7,10 +7,17 @@ class SamplePoint:
 
     def __init__(self,view:View):
         self._space:Space=view._space
-        self._state:State=State(view._space.names)
-        
         self._x_index:int=view._space.get_index(view.x_axis.name)
         self._y_index:int=view._space.get_index(view.y_axis.name)
+        self._state:State=State(view._space.names)
+        data=list(self._state)
+        x=view._space.get_measure(self._space.names[self._x_index])
+        y=view._space.get_measure(self._space.names[self._y_index])
+        data[self._x_index]=x.bound.low+x.bound.distance/2
+        data[self._y_index]=y.bound.low+x.bound.distance/2
+        self._state.set_data(*data)
+        
+        
         self.update()
 
       

@@ -4,12 +4,11 @@ from ..core import *
 
 
 class Pole(View):
-    def __init__(self,field:Space,viewport:Viewport=default_viewport,bg_color=None):
-        super().__init__(field,viewport,bg_color)
-        
-    
     def reset(self):
         super().reset()
+        #print('Pole Reset')
+        self.sp=self._space.sample_point
+        print(self.sp)
         w,h=self._viewport.size
         x,y=self._viewport.start
         L=9.8/(self._space.arg_value('a')**2)
@@ -19,9 +18,10 @@ class Pole(View):
         #print('Pole reset')
 
     
-    # def moveto(self,sp:SamplePoint):
-    #     px,_,_=sp.state
-    #     self.rope.rotation=px/pi*180
+    def update(self):
+        
+        px,_=self.sp.state
+        self.rope.rotation=px/pi*180
 
        
 

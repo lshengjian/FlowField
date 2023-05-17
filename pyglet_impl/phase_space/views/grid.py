@@ -7,17 +7,20 @@ from math import pi,atan
 from ..core.sample_point import SamplePoint
 class Grid(View):
     N_COLORS:int = 8
+    def __init__(self,space:Space,axis:str=None,viewport:Viewport=default_viewport):
+        super().__init__(space,axis)
+        self.sp:SamplePoint=SamplePoint(self)
+        space.sample_point=self.sp
+        #print('Grid sample_point')
+        self._colors=linear_gradient('#0000FF','#FF0000',self.N_COLORS)
+
     def reset(self):
         super().reset()
-        self.sp:SamplePoint=SamplePoint(self)
-        
         w,h=self._viewport.size
         self._body=shapes.Circle(w/2,h/2,6,color=(255, 255, 0),batch=self._batch)
 
         self._lines=[]
-        self._colors=linear_gradient('#0000FF','#FF0000',self.N_COLORS)
         self.cell_side=(w/(self.x_axis.num_sampling-1)+(self.y_axis.num_sampling-1))*0.5*0.618
-                # self._ds=[]
         i,j=0,0
         for y in  self.y_axis:
             j=0
@@ -26,7 +29,7 @@ class Grid(View):
                 data.set_data(x,y) #todo
                 s=self._space.constraint(data)
                 if not self._space._isFirstOrder:
-                    s=s/y if abs(y)>0 else 1e16
+                    s=s/y if abs(y)>0 else 999
                 self.add_line((i,j,s))
                 j+=1
             i+=1
@@ -39,7 +42,6 @@ class Grid(View):
 
 
     def update(self):
-        
         self.sp.update()
         px=self.sp.state.value(self.x_axis.name)
         py=self.sp.state.value(self.y_axis.name)

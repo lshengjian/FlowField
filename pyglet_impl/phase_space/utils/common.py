@@ -52,7 +52,8 @@ class Bound:
             rt=self.high if isFixed else self.low
         return rt
 
-
+    def __str__(self):
+        return f'{self.low}->{self.high}'
     @property
     def distance(self):
         return self.high-self.low

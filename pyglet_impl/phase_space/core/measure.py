@@ -24,3 +24,5 @@ class Measure:
 
     def __iter__(self):
         yield from self._ds
+    def __str__(self):
+        return f'{self.name}({self.bound})'

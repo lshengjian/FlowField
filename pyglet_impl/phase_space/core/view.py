@@ -9,12 +9,17 @@ HEIGHT = 768
 FPS = 60
 default_viewport=Viewport(Point(0,0),Size(WIDTH,HEIGHT))
 class View(ABC):
-    def __init__(self,space:Space,axis:str='*',viewport:Viewport=default_viewport):#,bg_color=None
+    def __init__(self,space:Space,axis:str=None,viewport:Viewport=default_viewport):#,bg_color=None
         self._viewport=viewport
         self._space:Space=space
         ms=space.names
-        if axis!='*':
+        if axis is None:
+            ms=space.names[:2]
+            
+        else:
             ms=axis.split(' ')
+        
+        #print(ms)
         self.x_axis:Measure=space.get_measure(ms[0])
         self.y_axis:Measure=space.get_measure(ms[1])
         #self._bg_color=bg_color
@@ -40,6 +45,7 @@ class View(ABC):
 
     def reset(self):
         self._batch = graphics.Batch()
+        #print('View Reset')
         # if self._bg_color is not  None:
         #     self._bg=shapes.Rectangle(self._lx,self._ly,self.w,self.h,color=self._bg_color ,batch=self._batch)
     

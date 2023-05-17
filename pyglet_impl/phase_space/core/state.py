@@ -3,14 +3,16 @@ from collections import namedtuple
 class State:
     ID=1
     def __init__(self,field_names:str='x1 x2 x3'):
-        typeName=f'S{State.ID:02}'
+        typeName=f'S{State.ID}'
         
         self._VectorType=namedtuple(typeName,field_names)
         self._fields=self._VectorType._fields
         State.ID+=1
         #print(typeName,len(self._fields))
         self._data=self._VectorType._make([0]*len(self._fields))
-
+    @property
+    def data(self)->namedtuple:
+        return self._data
     @property
     def fields(self):
         return self._fields

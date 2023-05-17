@@ -9,9 +9,12 @@ class Space(ABC):
         measures: List[Measure],
         isFirstOrder=True
     ):
+        self.sample_point=None
         self._name=type(self).__name__
         self._isFirstOrder=isFirstOrder
         self._description=''
+        self._names=[m.name for m in measures]
+        #print(self.names)
         self._measures:Dict[str,Measure]={m.name:m for m in measures}
         self.set_description()
 
@@ -23,13 +26,13 @@ class Space(ABC):
         return State(' '.join(self.names))
     
     def get_index(self,name)->int:
-        for i,k in enumerate(self._measures):
-            if k==name:
-                return i 
+        return self._names.index(name)
+
 
     def get_measure(self,name)->Measure:
-        for k in self._measures:
+        for k in self._measures.keys():
             if name==k:
+                #print(self._measures[name])
                 return self._measures[name]
     # def get_sampleing_measures(self):
     #     return list(
@@ -38,7 +41,7 @@ class Space(ABC):
     #     )
     @property
     def names(self)->List[str]:
-        return list(self._measures.keys())
+        return self._names
       
     def clone(self,state):
         return self.get_state_zero().set_data(*state) 

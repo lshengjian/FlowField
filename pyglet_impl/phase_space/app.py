@@ -44,7 +44,7 @@ class App(Window):
         self._field=CASES[self._case_idx]
         self._field.reset()
         self.grid=self.views[self._field._name][0]
-        #self._sp=SamplePoint(self._field,State(0,0,0))
+
         for  v in self.views[self._field._name]:
             v.reset()
         self._UI = UI(self, self._field, "Config",  "Set Parameters")

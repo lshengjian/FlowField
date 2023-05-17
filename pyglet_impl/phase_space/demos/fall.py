@@ -3,7 +3,7 @@ from ..core import State
 class Fall(Space):
 
     def config_args(self):
-        self.set_args([ArgInfo('a',10,1,10,0.1,'acc'),ArgInfo('k',2,1,3,0.1,'dump')])
+        self.set_args([ArgInfo('a',10,1,10,0.1,'acceleration'),ArgInfo('k',2,1,3,0.1,'dump')])
     
     def set_description(self):
         self.description='|time:t|velocity:v| & dv/dt=a-kv'
