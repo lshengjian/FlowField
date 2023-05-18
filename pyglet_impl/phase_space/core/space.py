@@ -9,16 +9,16 @@ class Space(ABC):
         measures: List[Measure],
         isFirstOrder=True
     ):
-        self.sample_point=None
+        self._sample_point=None
         self._name=type(self).__name__
         self._isFirstOrder=isFirstOrder
         self._description=''
         self._names=[m.name for m in measures]
         #print(self.names)
         self._measures:Dict[str,Measure]={m.name:m for m in measures}
-        self.set_description()
+        #self.set_description()
 
-        self._args:Dict[str,ArgInfo]={'step':ArgInfo('step',0.02,0.01,0.5,0.01)}
+        self._args:Dict[str,ArgInfo]={'step':ArgInfo('step',0.05,0.01,0.5,0.01)}
         self.config_args()
         self.reset()
     
@@ -34,11 +34,9 @@ class Space(ABC):
             if name==k:
                 #print(self._measures[name])
                 return self._measures[name]
-    # def get_sampleing_measures(self):
-    #     return list(
-    #         filter(lambda item:item.is_sampling,
-    #         self._measures)
-    #     )
+    @property
+    def name(self)->str:
+        return self._name
     @property
     def names(self)->List[str]:
         return self._names
@@ -63,10 +61,20 @@ class Space(ABC):
     def set_args(self,args:List[ArgInfo]):
         for arg in args:
             self._args[arg.name]=arg
+    
+    @property
+    def sample_point(self):
+        return self._sample_point    
+    @sample_point.setter
+    def sample_point(self,val):
+        self._sample_point=val
+    @property
+    def description(self):
+        return self._description
 
-
-    def set_description(self):
-        pass
+    @description.setter
+    def description(self,desc:str):
+        self._description=desc
         
     def config_args(self):
         pass

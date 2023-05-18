@@ -6,12 +6,14 @@ from .grid import Grid
 from .tip import Tip
 from .pole import Pole
 from .pilot import Pilot
-CASES:List[Space]=[PENDULUM,FALL,FISH,SPRING,] 
+from .contour import Contour
+CASES:List[Space]=[SPIRAL,FALL,FISH,SPRING,PENDULUM]
 def get_views()->Dict[str,List[View]]:
     return  {
+    'Spiral':[Contour(SPIRAL,axis='x y'),Tip(SPIRAL,axis='x y')],
     'Fish':[Grid(FISH),Tip(FISH)],
     'Fall':[Grid(FALL),Tip(FALL)],
     
     'Spring':[Pilot(SPRING),Tip(SPRING)],
-    'Pendulum':[Grid(PENDULUM),Pole(PENDULUM),Tip(PENDULUM)] #axis='time pos'
+    'Pendulum':[Grid(PENDULUM),Pole(PENDULUM),Tip(PENDULUM)] 
 }

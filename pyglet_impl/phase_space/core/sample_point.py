@@ -16,6 +16,9 @@ class SamplePoint:
         data[self._x_index]=x.bound.low+x.bound.distance/2
         data[self._y_index]=y.bound.low+x.bound.distance/2
         self._state.set_data(*data)
+        self._measure_x=x
+        self._measure_y=y
+
         
         
         self.update()
@@ -85,8 +88,8 @@ class SamplePoint:
             x,y=self._update2(step)
         #x,y=self._space.limit([x,y])
         data=list(self._state)
-        data[self._x_index]=x
-        data[self._y_index]=y
+        data[self._x_index]=self._measure_x.bound.limit(x,False)
+        data[self._y_index]=self._measure_y.bound.limit(y,False)
         self._state.set_data(*data)
 
 

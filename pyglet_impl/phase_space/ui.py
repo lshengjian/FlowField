@@ -94,10 +94,7 @@ class UI:
     ):
         settings: UISettings=UISettings(field)
         imgui.create_context()
-        #self.impl = PygletFixedPipelineRenderer(window)
         self.impl = create_renderer(window)
-        # imgui.new_frame()
-        # imgui.end_frame()
         self.settings = settings
         self.name = name
         self.text = text
@@ -106,10 +103,7 @@ class UI:
 
 
     def render(self):
-        #imgui.render()
-        #self.impl.render(imgui.get_draw_data())
         imgui.new_frame()
-
         imgui.begin(self.name)
         imgui.text(self.text)
         for index, setting in enumerate(self.settings):

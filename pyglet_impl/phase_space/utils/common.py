@@ -44,7 +44,7 @@ class Bound:
         self.low=low
         self.high=high
 
-    def limit(self,x,isFixed=False):
+    def limit(self,x,isFixed=True):
         rt=x
         if x<self.low:
             rt=self.low if isFixed else self.high

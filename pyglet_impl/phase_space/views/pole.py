@@ -8,7 +8,7 @@ class Pole(View):
         super().reset()
         #print('Pole Reset')
         self.sp=self._space.sample_point
-        print(self.sp)
+        #print(self.sp)
         w,h=self._viewport.size
         x,y=self._viewport.start
         L=9.8/(self._space.arg_value('a')**2)
@@ -19,6 +19,8 @@ class Pole(View):
 
     
     def update(self):
+        if not hasattr(self,'sp') :
+            return
         
         px,_=self.sp.state
         self.rope.rotation=px/pi*180

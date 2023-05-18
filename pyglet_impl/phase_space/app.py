@@ -12,7 +12,6 @@ class App(Window):
         clock.schedule_interval(self.update, 1/FPS)
         self._case_idx=0
         self.views=get_views()
-        
         self.reset()
         
       
@@ -34,16 +33,13 @@ class App(Window):
         
     def on_mouse_press(self,x, y, button, modifiers):
         if button & mouse.RIGHT:
-            self.grid.on_click(x,y)
-            
-            # px,py=.get_space_pos(x,y)
-            # self._sp.reset(State(px,py,0))
+            self.views[self._field.name][0].on_click(x,y)
+
 
             
     def reset(self):
         self._field=CASES[self._case_idx]
         self._field.reset()
-        self.grid=self.views[self._field._name][0]
 
         for  v in self.views[self._field._name]:
             v.reset()
@@ -57,7 +53,6 @@ class App(Window):
         for key,arg in self._field._args.items():
             if self._UI.settings.get_changed(key):
                 arg.value=self._UI.settings.get_value(key)
-                if key!='step':
-                    self.reset()
+                self.reset()
 
 

@@ -4,10 +4,10 @@ from math import sin
 class Pendulum(Space):
 
     def config_args(self):
-        self.set_args([ArgInfo('a',2,1,5,0.2),ArgInfo('b',1,0,3,0.2)])
+        self.set_args([ArgInfo('a',2,1,5,0.2,'a:acceleration'),ArgInfo('b',1,0,3,0.2,'damp')])
+        self.description="q:angle q':angle velocity | q''=-a.sin(q)-b.q'"
     
-    def set_description(self):
-        self.description="angle : q | velocity: q' | q''=-a.sin(q)-b.q'"
+     
     
     def constraint(self,state:State):
         x,y=state

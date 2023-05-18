@@ -14,6 +14,15 @@ class Grid(View):
         #print('Grid sample_point')
         self._colors=linear_gradient('#0000FF','#FF0000',self.N_COLORS)
 
+    def set_data(self,state:State,x:float,y:float):
+        idx_x=self.sp._x_index
+        idx_y=self.sp._y_index
+        data=list(state)
+        data[idx_x]=x
+        data[idx_y]=y
+        state.set_data(*data)
+
+
     def reset(self):
         super().reset()
         w,h=self._viewport.size
@@ -25,11 +34,11 @@ class Grid(View):
         for y in  self.y_axis:
             j=0
             for x in  self.x_axis:
-                data=self._space.get_state_zero()
-                data.set_data(x,y) #todo
-                s=self._space.constraint(data)
+                state=self._space.get_state_zero()
+                self.set_data(state,x,y) #todo
+                s=self._space.constraint(state)
                 if not self._space._isFirstOrder:
-                    s=s/y if abs(y)>0 else 999
+                    s=s/y if abs(y)>0 else -999
                 self.add_line((i,j,s))
                 j+=1
             i+=1
@@ -48,9 +57,11 @@ class Grid(View):
         x,y=self.get_pos(px,py)
         self._body.position=(x,y)            
         
-    def rotate(self, slop, shape:shapes.Rectangle,auto_color=False):
+    def rotate(self, slop, shape:shapes.Rectangle,auto_color=False,fix=False):
         a = -atan(slop)
         d= a*180.0/pi
+        if fix:
+            d+=180
         shape.rotation=d
         if not auto_color:
             return
@@ -67,13 +78,14 @@ class Grid(View):
     def add_line(self,sp:Tuple): #sp:(row,col,slop)
         x,y=self.get_pos_by_indexs(sp[0],sp[1])      
         sx,sy=self.get_pos(x,y)
-        rect=shapes.Rectangle(sx, sy,self.cell_side ,1,color=(50, 45, 30),batch=self._batch)
+        rect=shapes.Rectangle(sx, sy,self.cell_side ,2,color=(50, 45, 30),batch=self._batch)
         rect.anchor_position=(rect.width/2,rect.height/2)
         #c=shapes.Circle(sx, sy,1,color=(5, 245, 13),batch=self._batch)
-        c=shapes.Rectangle(sx, sy,self.cell_side/2 ,1,color=(255, 245, 235),batch=self._batch)
+        c=shapes.Rectangle(sx, sy,self.cell_side/2 ,2,color=(255, 245, 235),batch=self._batch)
         c.anchor_position=(0,0)
-        self.rotate(sp[2], rect,True)
-        self.rotate(sp[2], c)
+        fix=y<0
+        self.rotate(sp[2], rect,True,fix)
+        self.rotate(sp[2], c,False,fix)
         self._lines.append((c,rect))
 
         

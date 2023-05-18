@@ -59,6 +59,8 @@ class View(ABC):
         return x,y
 
     def get_pos(self,x,y):
+        x=self.x_axis.bound.limit(x)
+        y=self.y_axis.bound.limit(y)
         sx=self._ox+(x-self._lx)*self._kx
         sy=self._oy+(y-self._ly)*self._ky
         return round(sx),round(sy)
