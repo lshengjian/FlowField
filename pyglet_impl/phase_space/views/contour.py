@@ -4,8 +4,8 @@ from ..core import *
 from math import exp
 class Contour(View):
     N_COLORS:int = 8
-    def reset(self):
-        super().reset()
+    def reset(self,cfg):
+        super().reset(cfg)
         self._colors=linear_gradient('#0000FF','#FF0000',self.N_COLORS)
         names=self._space.names
         self.t_axis=self._space.get_measure(names[0])

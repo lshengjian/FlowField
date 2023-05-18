@@ -41,7 +41,7 @@ def main():
 
     def update(dt):
         global checkbox_activ,state_radioButton,color,value_intSlider_1
-        impl.process_inputs()
+        #impl.process_inputs()
         imgui.new_frame()
         imgui.begin("MyGame")
 

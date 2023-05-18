@@ -27,6 +27,11 @@ class UISetting:
         self.changed = False
 
     def set_config(self):
+        
+       
+
+
+
         desc=self.name if self.description is None else self.description
         """Missing some combinations"""
         if self.dtype == "int" and self.type == "input":
@@ -90,22 +95,39 @@ class UISettings(List):
 
 class UI:
     def __init__(
-        self, window, field:Space, name: str = "Config", text: str = "Set pendulum parameters"
+        self, window, cb, demo_names:List[str], space:Space,name: str = "Config", text: str = "Set pendulum parameters"
     ):
-        settings: UISettings=UISettings(field)
+        settings: UISettings=UISettings(space)
         imgui.create_context()
         self.impl = create_renderer(window)
         self.settings = settings
         self.name = name
         self.text = text
+        self.demo_names=demo_names
+        self.callback=cb
 
 
 
 
-    def render(self):
+    def render(self):#,names:List[str]=['C1','C2'],cb=None
         imgui.new_frame()
         imgui.begin(self.name)
         imgui.text(self.text)
+        
+        N=len(self.demo_names)
+        data=[False]*N
+        for idx,na in enumerate(self.demo_names):
+            if imgui.radio_button(na, data[idx]):
+                if self.callback!=None:
+                    imgui.end()
+                    imgui.end_frame()
+                    #imgui.render()
+                    self.callback(na)
+                    return
+            if idx<N-1:
+                imgui.same_line()
+
+
         for index, setting in enumerate(self.settings):
             self.settings[index] = setting.set_config()
 

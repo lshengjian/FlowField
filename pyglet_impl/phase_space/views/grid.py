@@ -7,7 +7,7 @@ from math import pi,atan
 from ..core.sample_point import SamplePoint
 class Grid(View):
     N_COLORS:int = 8
-    def __init__(self,space:Space,axis:str=None,viewport:Viewport=default_viewport):
+    def __init__(self,space:Space,axis:str=None):
         super().__init__(space,axis)
         self.sp:SamplePoint=SamplePoint(self)
         space.sample_point=self.sp
@@ -23,8 +23,8 @@ class Grid(View):
         state.set_data(*data)
 
 
-    def reset(self):
-        super().reset()
+    def reset(self,cfg):
+        super().reset(cfg)
         w,h=self._viewport.size
         self._body=shapes.Circle(w/2,h/2,6,color=(255, 255, 0),batch=self._batch)
 

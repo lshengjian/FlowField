@@ -4,8 +4,8 @@ from ..core import *
 
 
 class Pole(View):
-    def reset(self):
-        super().reset()
+    def reset(self,cfg):
+        super().reset(cfg)
         #print('Pole Reset')
         self.sp=self._space.sample_point
         #print(self.sp)

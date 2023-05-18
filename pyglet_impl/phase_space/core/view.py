@@ -7,10 +7,11 @@ from phase_space.core import Measure,Space,ArgInfo
 WIDTH = 1024
 HEIGHT = 768
 FPS = 60
-default_viewport=Viewport(Point(0,0),Size(WIDTH,HEIGHT))
+#default_viewport=Viewport(Point(0,0),Size(WIDTH,HEIGHT))
 class View(ABC):
-    def __init__(self,space:Space,axis:str=None,viewport:Viewport=default_viewport):#,bg_color=None
-        self._viewport=viewport
+    def __init__(self,space:Space,axis:str=None):
+ 
+        
         self._space:Space=space
         ms=space.names
         if axis is None:
@@ -23,15 +24,7 @@ class View(ABC):
         self.x_axis:Measure=space.get_measure(ms[0])
         self.y_axis:Measure=space.get_measure(ms[1])
         #self._bg_color=bg_color
-        w,h=self._viewport.size
-        ox,oy=self._viewport.start
-        kx=w/self.x_axis.bound.distance
-        ky=h/self.y_axis.bound.distance
-        lx,ly=self.x_axis.bound.low,self.y_axis.bound.low
-        self._ox,self._oy=ox,oy
-        self._kx,self._ky=kx,ky
-        self._lx,self._ly=lx,ly
-        self._w,self._h=w,h
+        
         
     def get_vec_zero(self):
         ns=f'{self.x_axis.name},{self.y_axis.name}'
@@ -43,11 +36,19 @@ class View(ABC):
     def update(self):
         pass
 
-    def reset(self):
+    def reset(self,cfg):
         self._batch = graphics.Batch()
-        #print('View Reset')
-        # if self._bg_color is not  None:
-        #     self._bg=shapes.Rectangle(self._lx,self._ly,self.w,self.h,color=self._bg_color ,batch=self._batch)
+        w,h=cfg['WIDTH'],cfg['HEIGHT']
+        self._viewport=Viewport(Point(0,0),Size(w,h))
+ 
+        ox,oy=self._viewport.start
+        kx=w/self.x_axis.bound.distance
+        ky=h/self.y_axis.bound.distance
+        lx,ly=self.x_axis.bound.low,self.y_axis.bound.low
+        self._ox,self._oy=ox,oy
+        self._kx,self._ky=kx,ky
+        self._lx,self._ly=lx,ly
+        self._w,self._h=w,h
     
 
     def render(self):

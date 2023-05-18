@@ -5,10 +5,8 @@ from random import random,randint
 
 class Pilot(View):
     
-
-   
-    def reset(self):
-        super().reset()
+    def reset(self,cfg):
+        super().reset(cfg)
         w,h=self._viewport.size
         
         ns=self.x_axis.num_sampling
