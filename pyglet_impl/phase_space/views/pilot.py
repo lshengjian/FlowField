@@ -7,8 +7,6 @@ class Pilot(View):
     
     def reset(self,cfg):
         super().reset(cfg)
-        w,h=self._viewport.size
-        
         ns=self.x_axis.num_sampling
         DX=self.x_axis.bound.distance/(ns-1)
 
@@ -23,7 +21,8 @@ class Pilot(View):
         pos_bound=self.y_axis.bound
         dy=pos_bound.distance/8
         py=(pos_bound.low+dy*k)*0.618
-        state=self._space.get_state_zero().set_data(0,py,0)
+        v=(random()-0.5)*8
+        state=self._space.get_state_zero().set_data(0,py,v)
         c=(randint(0,255),randint(0,255),randint(0,255))
         t2=0
         dx=0

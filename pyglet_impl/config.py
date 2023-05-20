@@ -5,6 +5,8 @@ from phase_space.views import *
 
 WIDTH=1024
 HEIGHT=600
+FPS = 60
+TITLE='Space View'
 cache_space={}
 cache_view={}
 def get_space(name):
@@ -23,7 +25,7 @@ def make_views(name)->Dict[str,List[View]]:
         elif 'Spring'==name:
             vs=[Pilot(space),Tip(space)]
         elif 'Pendulum'==name:
-            vs=[Grid(space),Pole(space),Tip(space)] 
+            vs=[Grid(space),Tip(space),Pole(space)] 
         cache_view[name]=vs
     return space,cache_view[name]
 
@@ -50,6 +52,4 @@ args={
 }
    
 if __name__ == "__main__":
-    print(demo_names)
     space=get_space(demo_names[0])
-    print(space.name)

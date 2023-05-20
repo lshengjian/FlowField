@@ -4,14 +4,11 @@ from .state import *
 from pyglet import shapes,graphics
 from phase_space.core import Measure,Space,ArgInfo
 
-WIDTH = 1024
-HEIGHT = 768
-FPS = 60
-#default_viewport=Viewport(Point(0,0),Size(WIDTH,HEIGHT))
+
+
 class View(ABC):
     def __init__(self,space:Space,axis:str=None):
- 
-        
+        #self._batch = graphics.Batch()
         self._space:Space=space
         ms=space.names
         if axis is None:
@@ -23,7 +20,7 @@ class View(ABC):
         #print(ms)
         self.x_axis:Measure=space.get_measure(ms[0])
         self.y_axis:Measure=space.get_measure(ms[1])
-        #self._bg_color=bg_color
+
         
         
     def get_vec_zero(self):

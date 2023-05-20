@@ -10,9 +10,9 @@ class App(Window):
         self.CFG=CFG
         
         w,h=CFG['WIDTH'],CFG['HEIGHT']
-        super().__init__(w,h , "Phase Space View (by alex)", resizable=False)
+        super().__init__(w,h , CFG['TITLE'], resizable=False)
         self.set_vsync(False)
-        clock.schedule_interval(self.update, 1/FPS)
+        clock.schedule_interval(self.update, 1/CFG['FPS'])
         self._case_idx=0
         self.demo_names:List[str]=CFG['demo_names']
         self.select_space()

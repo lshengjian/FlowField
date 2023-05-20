@@ -1,4 +1,14 @@
 # FlowField
-flow field demo use shader
+flow field demo 
 
-git push origin --tags
+# how to play
+```
+cd pyglet_impl
+python  play.py
+```
+
+# config
+edit config.py
+
+
+

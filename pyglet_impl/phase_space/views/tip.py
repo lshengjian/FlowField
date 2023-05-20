@@ -19,7 +19,7 @@ class Tip(View):
         # self._bg=shapes.Rectangle(w*0.38,h-20,w*0.618,40,color=(0, 0, 0),batch=self._batch)
         # self._bg.anchor_x=0
         # self._bg.anchor_y=self._bg.height
-        self._desc=Label(self._space.description,font_size=20,color=(0,255,0,255),x=w*0.382,y=h-32,batch=self._batch)
+        self._desc=Label(self._space.description,font_size=20,color=(255,0,0,255),x=w*0.382,y=h-32,batch=self._batch)
         
 
 
