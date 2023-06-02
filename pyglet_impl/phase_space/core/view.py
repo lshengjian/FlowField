@@ -20,8 +20,7 @@ class View(ABC):
         #print(ms)
         self.x_axis:Measure=space.get_measure(ms[0])
         self.y_axis:Measure=space.get_measure(ms[1])
-
-        
+       
         
     def get_vec_zero(self):
         ns=f'{self.x_axis.name},{self.y_axis.name}'

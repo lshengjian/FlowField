@@ -49,6 +49,7 @@ def main():
             value_intSlider_1, min_value = 0, max_value = 100)
 
 
+
         # A checkbox has 2 return values
         # 1) "clicked" is a bool value and is "True" if the checkbox is clicked
         #   (the value is only for short time "True")
