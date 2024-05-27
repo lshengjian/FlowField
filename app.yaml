@@ -1,0 +1,32 @@
+cells_side: 20
+problems:
+  P1:
+    desc: demo1 by alex
+    U: X/X   
+    V: X+1-Y
+    X: 
+      name: time
+      range: [0,3]
+    Y:
+      name: speed
+      range: [0,3]
+    args:
+      K:
+        value: 3
+        start: 1
+        end: 5
+  P2:
+    desc: demo2 by alex
+    U: cos(X)*cos(Y)   
+    V: -sin(X)*sin(Y)
+    X: 
+      name: time
+      range: [0,3]
+    Y:
+      name: speed
+      range: [0,3]
+    args:
+      K:
+        value: 3
+        start: 1
+        end: 5
