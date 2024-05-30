@@ -27,11 +27,6 @@ class UISetting:
         self.changed = False
 
     def set_config(self):
-        
-       
-
-
-
         desc=self.name if self.description is None else self.description
         """Missing some combinations"""
         if self.dtype == "int" and self.type == "input":

@@ -1,0 +1,11 @@
+desc: free fall with air frcition
+U: 1  
+V: 9.8-k*Y
+X: 
+  name: time
+  range: [0,60]
+Y:
+  name: speed
+  range: [40,60]
+args:
+  k: 0.2

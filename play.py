@@ -10,19 +10,27 @@ from matplotlib.cm import ScalarMappable
 # 初始化小球的位置
 ball_x = 0.5
 ball_y = 0.5
-def load_config(fname='app.yaml')->DictConfig:
+def load_config(fname='conf/app.yaml')->DictConfig:
     cfg = OmegaConf.load(fname)
+    problem_config = f"conf/problems/{cfg.problem}.yaml"
+
+    # 将数据库配置文件的内容合并到主配置中
+    problem_config = OmegaConf.load(problem_config)
+    cfg = OmegaConf.merge(cfg, problem_config)
+
+    # 现在 config 中包含了主配置和数据库配置
+    print(OmegaConf.to_yaml(cfg))
     return cfg
 
-def show(cfg,p,x,y,X,Y,U,V):
+def show(cfg,x,y,X,Y,U,V):
     global ball_x, ball_y
-    title,xname,yname=p.desc,p.X.name,p.Y.name
+    title,xname,yname=cfg.desc,cfg.X.name,cfg.Y.name
     
     # 创建插值函数
     u_interp = interp2d(x, y, U*np.ones_like(V), kind='linear')
     v_interp = interp2d(x, y, V, kind='linear')
     ball_x,ball_y=x[0],y[-1]
-    step=(x[-1]-x[0])/cfg.cells_side/2
+    step=(x[-1]-x[0])/cfg.cells_side/2,(y[-1]-y[0])/cfg.cells_side/2
     #print('ball pos:',ball_x,ball_y)
 
     # 计算矢量的大小
@@ -42,23 +50,26 @@ def show(cfg,p,x,y,X,Y,U,V):
     fig, ax = plt.subplots(figsize=(7, 6))
 
     # 绘制矢量场，为每个箭头指定颜色
-    #ax.quiver(X, Y, U, V)
-    ax.quiver(X, Y, U/magnitude, V/magnitude, color=colors)
+    if cfg.normalize:
+        ax.quiver(X, Y, U/magnitude, V/magnitude, color=colors)
+    else:
+        ax.quiver(X, Y, U, V, color=colors)
+    #
 
     ball, = ax.plot(ball_x, ball_y, 'bo')  # 'bo' 表示蓝色圆点
 
     def update(frame):
         global ball_x, ball_y
         # 使用插值函数获取当前位置的矢量分量
-        u = u_interp(ball_x, ball_y) #U[round((ball_x-x1)/(x2-x1)*N)]#
-        v = v_interp(ball_x, ball_y) #U[round((ball_y-y1)/(y2-y1)*N)]#
+        u = u_interp(ball_x, ball_y) 
+        v = v_interp(ball_x, ball_y) 
         # 更新小球的位置
-        #dis=np.sqrt(u**2+v**2)
-        ball_x += u * step
-        ball_y += v * step
+        dis=np.sqrt(u**2+v**2)
+        ball_x += u/(dis+1e-10) * step[0]
+        ball_y += v/(dis+1e-10) * step[1]
         # 确保小球不会离开绘图区域
         ball_x = np.clip(ball_x, min(x), max(x))
-        ball_y = np.clip(ball_y, min(x),  max(x))
+        ball_y = np.clip(ball_y, min(y),  max(y))
         ball.set_data(ball_x, ball_y)
         return ball,
     # 显示图形
@@ -70,30 +81,30 @@ def show(cfg,p,x,y,X,Y,U,V):
 
 def main(cfg):
     N=cfg.cells_side
-    pname=cfg.show
-    p=cfg.problems[pname]
-    x1,x2=p.X.range
-    y1,y2=p.Y.range
+    # pname=cfg.show
+    # p=cfg.problems[pname]
+    x1,x2=cfg.X.range
+    y1,y2=cfg.Y.range
     xs = np.linspace(x1,x2, N)
     ys = np.linspace(y1,y2, N)
     X, Y = np.meshgrid(xs, ys)
 
     x, y = symbols('X Y')
-    u=sympify(p.U)
-    v=sympify(p.V)
+    u=sympify(cfg.U)
+    v=sympify(cfg.V)
     ks=[]
     ds=[]
-    args=p.get('args',None)
+    args=cfg.get('args',None)
     if args!=None:
-        for arg in p.args.keys():
+        for arg in cfg.args.keys():
             ks.append(symbols(arg))
-            ds.append(p.args[arg])
+            ds.append(cfg.args[arg])
 
     func1 = lambdify((x,y,*ks), u, 'numpy')
     func2 = lambdify((x,y,*ks), v, 'numpy')
     U=func1(X,Y,*ds)
     V=func2(X,Y,*ds)
-    show(cfg,p,xs,ys,X,Y,U,V)
+    show(cfg,xs,ys,X,Y,U,V)
 
 # def check_config(cfg):
 #     print(cfg.cells_side)

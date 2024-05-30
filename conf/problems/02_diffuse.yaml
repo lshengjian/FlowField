@@ -1,0 +1,11 @@
+desc: temperature conduction or concentration diffusion
+U: 1  
+V: k*(20-Y)
+X: 
+  name: time
+  range: [0,60]
+Y:
+  name: temperature
+  range: [0,40]
+args:
+  k: 0.2

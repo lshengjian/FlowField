@@ -1,0 +1,4 @@
+cells_side: 24
+animate_time: 6 #second
+normalize: true
+problem: 01_fall #01_fall,02_diffuse,03_fishing
