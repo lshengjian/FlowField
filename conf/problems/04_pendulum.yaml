@@ -1,0 +1,8 @@
+desc: pendulum
+U: Y*1  
+V: -k1*sin(X)-k2*Y
+X: ["angular",0,10] #name,min,max
+Y: ["angular velocity",-10,10]
+args:
+  k1: ["coefficient of gravity",2,1,5] #name,value,min,max
+  k2: ["drag coefficient",0.3,0,3]

@@ -3,7 +3,7 @@ from os import path
 dir=path.abspath(path.dirname(__file__) + './..')
 sys.path.append(dir)
 from phase_space.core import State
-from phase_space.demos2 import FALL
+from phase_space.demos.fall import FALL
 
 def test_space():
     names=FALL.names

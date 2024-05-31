@@ -1,13 +1,19 @@
 # FlowField
 flow field demo 
 
-# how to play
+## show vector field
+```
+python  show.py
+```
+
+![show filed](./images/show.png "simple pendulum")
+
+You can add your own example in the conf/problems directory 
+
+## vector field playground
 ```
 python  play.py
 ```
-
-# config
-edit app.yaml
-
+![playground](./images/play.png "simple pendulum")
 
 

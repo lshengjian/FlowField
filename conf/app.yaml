@@ -1,4 +1,5 @@
 cells_side: 24
 animate_time: 6 #second
 normalize: true
-problem: 01_fall #01_fall,02_diffuse,03_fishing
+ball_pos: [0,0.8] # normalize coordinate, [1,1] correspond to the top right corner of the screen
+problem: 04_pendulum #01_fall,02_diffuse,03_fishing,04_pendulum
