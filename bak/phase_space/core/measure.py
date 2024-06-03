@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from phase_space.utils import Bound
+from field.utils import Bound
 
 @dataclass
 class Measure:

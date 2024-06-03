@@ -2,7 +2,7 @@ from typing import Tuple
 from pyglet import shapes,graphics
 from pyglet.text import Label
 from ..core import *
-from phase_space.utils import linear_gradient
+from field.utils import linear_gradient
 from math import pi,atan2,tan,exp,inf
 from ..core.sample_point import SamplePoint
 class Grid(View):
