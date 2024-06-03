@@ -1,9 +1,10 @@
 from pyglet.window import mouse,Window,key
 from pyglet import clock
 from .space import Space
-from .tip import Tip
+
 from .utils import load_config,get_config
 from .ui import UI
+from .views import Tip,Grid
 
 class App(Window):
     def __init__(self):
@@ -52,8 +53,9 @@ class App(Window):
         super().__init__(w,h , cfg['TITLE'], resizable=False)
         self.set_vsync(False)
         clock.schedule_interval(self.update, 1/cfg['FPS'])
-        #self._case_idx=0
-        self.views=[Tip(space=Space(cfg))]
+        self._case_idx=0
+        space=Space(cfg)
+        self.views=[Tip(space),Grid(space)]
         
         
         self._UI = UI(self,self.ui_callback, self.demo_names,cfg,self.demo_names[0],  "Set Parameters")
