@@ -90,40 +90,20 @@ class UISettings(List):
 
 class UI:
     def __init__(
-        self, window, cb, demo_names:List[str], cfg:any,name: str = "Config", text: str = "Set pendulum parameters"
+        self, window,  cfg:any,name: str = "Config"
     ):
         imgui.create_context()
+        self.cfg=cfg
         self.impl = create_renderer(window)
         self.settings: UISettings = UISettings(cfg)
         self.name = name
-        self.text = text
-        self.demo_names=demo_names
-        self.callback=cb
-        N=len(demo_names)
-        self.flags=[False]*N
-        self.set_flag(name)
 
-    def set_flag(self,name:str):
-        for i,demo in enumerate(self.demo_names):
-            if (name==demo):
-                self.flags[i]=True
-                break
+
 
 
     def render(self):#,names:List[str]=['C1','C2'],cb=None
         imgui.new_frame()
         imgui.begin(self.name)
-        imgui.text(self.text)
-        for idx,na in enumerate(self.demo_names):
-            if imgui.radio_button(na, self.flags[idx]):
-                if self.callback!=None:
-                    imgui.end()
-                    imgui.end_frame()
-                    #imgui.render()
-                    self.callback(na)
-                    return
-            if idx<len(self.flags)-1:
-                imgui.same_line()
 
 
         for index, setting in enumerate(self.settings):

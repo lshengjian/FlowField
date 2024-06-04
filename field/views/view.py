@@ -27,11 +27,12 @@ class View(ABC):
         self._space:Space=space
         self._batch = graphics.Batch()
         cfg=self.cfg=space.cfg
-        self.w,self.h=cfg['WIDTH'],cfg['HEIGHT']
+        
         if viewPort is None:
-            self._viewport=Viewport(Point(0,0),Size(self.w,self.h))
+            self._viewport=Viewport(Point(0,0),Size(cfg['WIDTH'],cfg['HEIGHT']))
         else:
             self._viewport=viewPort
+        self.w,self.h=self._viewport.size
         ox,oy=self._viewport.start
         kx=self.w/(space.x_limit[1]-space.x_limit[0])
         ky=self.h/(space.y_limit[1]-space.y_limit[0])

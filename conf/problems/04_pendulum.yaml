@@ -1,4 +1,5 @@
 desc: pendulum
+trajectory: X
 U: Y*1  
 V: -k1*sin(X)-k2*Y
 X: ["angular",0,10] #name,min,max

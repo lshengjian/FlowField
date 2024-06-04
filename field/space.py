@@ -2,17 +2,37 @@ from typing import Tuple
 import numpy as np
 from sympy import symbols, sympify, lambdify
 from scipy.interpolate import interp2d
+from queue import deque
+
+class MaxSizeQueue:
+    def __init__(self, max_size=100):
+        self.queue = deque(maxlen=max_size)
+        self._max_size=max_size
+        
+    @property
+    def max_size(self):
+        return self._max_size
+    
+    def push(self, item):
+        self.queue.append(item)
+        
+    def get_data(self):
+        return list(self.queue)
 
 class Space():
+    STEP_K=0.2
     def __init__(
         self,
         cfg
     ):
         self.ball_pos=[0,0]
         self.cfg=cfg
+        N=cfg.cells_side
+        self.trajectory:MaxSizeQueue=MaxSizeQueue(500)
         self.reset()
        
     def reset(self):
+        
         cfg=self.cfg
         N=cfg.cells_side
         x1,x2=cfg.X[1:3]
@@ -51,16 +71,30 @@ class Space():
         self.x_limit=(min(xs), max(xs))
         self.y_limit=(min(ys), max(ys))
 
-    def move(self,x,y)->Tuple[int,int]:
-        #ball_x,ball_y=self.ball_pos
-        u = self.u_interp(x, y) 
-        v = self.v_interp(x, y) 
-        dis=np.sqrt(u**2+v**2)
-        x += u/(dis+1e-10) * self.steps[0]
-        y += v/(dis+1e-10) * self.steps[1]
+    def clip(self,x,y)->Tuple[int,int]:
         x = np.clip(x, *self.x_limit)
         y = np.clip(y, *self.y_limit)
         return x,y
+    def get_direction(self,x,y):
+        u = self.u_interp(x, y) 
+        v = self.v_interp(x, y) 
+        dis=np.sqrt(u**2+v**2)
+        dx = u/(dis+1e-10)
+        dy = v/(dis+1e-10) 
+        return dx,dy    
+           
+    def next_pos(self,x,y,scale=0.5):
+        k= self.steps[0]*scale,self.steps[1]*scale
+        dx,dy=self.get_direction(x,y)
+        pos = self.clip(x+dx*k[0],y+dy*k[1])
+        return pos
+
+    def update(self):
+        x,y=self.ball_pos
+        pos = self.next_pos(x,y,self.STEP_K)
+        self.trajectory.push(pos)
+        self.ball_pos[0]=pos[0]
+        self.ball_pos[1]=pos[1]
 '''
     def _update1(self,step):#step is dx
         CS=self._space.constraint

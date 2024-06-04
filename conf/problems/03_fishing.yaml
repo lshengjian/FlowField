@@ -1,4 +1,5 @@
 desc: aquaculture and fishing
+trajectory: Y
 U: 1  
 V: k1*Y-k2*(Y**2)-k3
 X: ["time",0,1] #name,min,max

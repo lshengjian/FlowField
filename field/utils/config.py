@@ -19,7 +19,8 @@ def load_config()->List[str]:
         rt.append(p.stem)
         #print(OmegaConf.to_yaml(cfg))
     return rt
-@lru_cache(maxsize=10) 
+
+@lru_cache(maxsize=50) 
 def get_config(pname:str='01_fall')->DictConfig:
     if len(cache_cfg)<2:
         load_config()
