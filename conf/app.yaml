@@ -3,7 +3,7 @@ HEIGHT: 600
 FPS: 60
 TITLE: Space View
 
-cells_side: 24
+cells_side: 30
 animate_time: 6 #second
 normalize: true
 ball_pos: [0,0.98] # normalize coordinate, [1,1] correspond to the top right corner of the screen

@@ -2,7 +2,7 @@ import  sys
 from os import path
 dir=path.abspath(path.dirname(__file__) + './..')
 sys.path.append(dir)
-from field.utils import linear_gradient,RGB_to_hex
+from src.utils import linear_gradient,RGB_to_hex
 
 
 def test_linear_gradient():

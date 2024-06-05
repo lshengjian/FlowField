@@ -2,7 +2,7 @@ from typing import Tuple
 from pyglet import shapes,graphics
 from pyglet.text import Label
 
-from field.utils import linear_gradient
+from src.utils import linear_gradient
 from math import pi,atan2,tan,exp,inf
 from .view import View
 class Grid(View):
@@ -36,8 +36,8 @@ class Grid(View):
             for j in range(N):
                 x=self._space.x_limit[0]+j*dx
                 y=self._space.y_limit[0]+i*dy
-                x1,y1=self._space.next_pos(x,y,1.2)
-                self.add_line_segment(x,y,x1,y1)
+                pos,_=self._space.next_pos_dir(x,y,1.2)
+                self.add_line_segment(x,y,*pos)
 
     
     def add_line_segment(self,x,y,x1,y1): 
@@ -46,8 +46,8 @@ class Grid(View):
         k=0.618
         x1=x*(1-k)+x2*k
         y1=y*(1-k)+y2*k
-        line1=shapes.Line(x,y,x1,y1,color=(223, 223, 223),batch=self._batch)
-        line2=shapes.Line(x1,y1,x2,y2,color=(250, 50, 34),batch=self._batch)
+        line1=shapes.Line(x,y,x1,y1,color=(255, 250, 203),batch=self._batch)
+        line2=shapes.Line(x1,y1,x2,y2,color=(0, 250, 0),batch=self._batch)
 
         self._lines.append((line1,line2))
 

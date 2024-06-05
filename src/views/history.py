@@ -39,7 +39,7 @@ class History(View):
         x,y=self._space.ball_pos
         N=self._space.trajectory.max_size
         for i in range(N):
-            self.cs.append(shapes.Circle(x,y,3,color=(255, 255, 0),batch=self._batch))
+            self.cs.append(shapes.Circle(x,y,1,color=(255, 255, 0),batch=self._batch))
             
 
     

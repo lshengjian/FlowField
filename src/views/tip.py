@@ -6,9 +6,9 @@ class Tip(View):
         w,h=self.w,self.h
 
         self._tips=[
-            Label('TIP: ',font_size=20,color=(0,255,8,210),x=20,y=64,batch=self._batch),
-            Label('arrow key show next case',font_size=18,color=(5,235,28,210),x=20,y=44,batch=self._batch),
-            Label('right mouse reset the ball',font_size=18,color=(5,235,28,210),x=20,y=24,batch=self._batch)
+            Label('TIP: ',font_size=20,color=(245,255,8,210),x=20,y=64,batch=self._batch),
+            Label('arrow key show next case',font_size=18,color=(245,235,28,210),x=20,y=44,batch=self._batch),
+            Label('right mouse reset the ball',font_size=18,color=(245,235,28,210),x=20,y=24,batch=self._batch)
         ]
         
         self._ylable=Label(self._space.y_name,font_size=20,x=20,y=h/2,batch=self._batch)

@@ -1,5 +1,5 @@
 import pyglet
-from field.app import App
+from src.app import App
 
 def main():
     App()

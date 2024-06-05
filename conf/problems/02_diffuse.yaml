@@ -4,4 +4,4 @@ V: k*(20-Y)
 X: ["time",0,60] #name,min,max
 Y: ["temperature",0,40]
 args:
-  k: ["coefficient of conduction",0.2,0,10] #name,value,min,max
+  k: ["coefficient of conduction",0.2,0,0.7] #name,value,min,max

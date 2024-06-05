@@ -4,4 +4,4 @@ V: 9.8-k*Y
 X: ["time",0,60] #name,min,max
 Y: ["speed",40,60]
 args:
-  k: ["drag coefficient",0.2,0,1] #name,value,min,max
+  k: ["drag coefficient",0.2,0,0.27] #name,value,min,max

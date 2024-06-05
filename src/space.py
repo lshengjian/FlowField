@@ -58,7 +58,7 @@ class Space():
         U=func1(X,Y,*ds)
         V=func2(X,Y,*ds)
         
-        v_interp = interp2d(xs, ys, V, kind='cubic')
+        v_interp = interp2d(xs, ys, V, kind='linear') #kind='cubic'
         u_interp = interp2d(xs, ys, np.ones_like(V)*U, kind='linear')
         ball_x=x1+(x2-x1)*cfg.ball_pos[0]
         ball_y=y1+(y2-y1)*cfg.ball_pos[1]
@@ -83,15 +83,22 @@ class Space():
         dy = v/(dis+1e-10) 
         return dx,dy    
            
-    def next_pos(self,x,y,scale=0.5):
+    def next_pos_dir(self,x,y,scale=0.5):
         k= self.steps[0]*scale,self.steps[1]*scale
         dx,dy=self.get_direction(x,y)
         pos = self.clip(x+dx*k[0],y+dy*k[1])
-        return pos
+        return pos,np.array([dx,dy])
 
     def update(self):
         x,y=self.ball_pos
-        pos = self.next_pos(x,y,self.STEP_K)
+        pos1,dir1 = self.next_pos_dir(x,y,self.STEP_K)
+        pos2,dir2 = self.next_pos_dir(pos1[0],pos1[1],self.STEP_K)
+        pos3,dir3 = self.next_pos_dir(pos2[0],pos2[1],self.STEP_K)
+        pos4,dir4 = self.next_pos_dir(pos3[0],pos3[1],self.STEP_K)
+        dir=(dir1+2*dir2+2*dir3+dir4)/6
+        k= self.steps[0]*self.STEP_K,self.steps[1]*self.STEP_K
+        dx,dy=dir
+        pos = self.clip(x+dx*k[0],y+dy*k[1])
         self.trajectory.push(pos)
         self.ball_pos[0]=pos[0]
         self.ball_pos[1]=pos[1]
