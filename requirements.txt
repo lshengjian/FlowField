@@ -1,0 +1,8 @@
+imgui==2.0.0
+matplotlib==3.8.4
+numpy==1.24.4
+omegaconf==2.3.0
+pyglet==2.0.15
+pytest==7.4.0
+scipy==1.8.0
+sympy==1.12

@@ -1,6 +1,11 @@
 # FlowField
 flow field demo 
 
+## install
+``` python
+pip install -r requirements.txt
+```
+
 ## show vector field
 ```
 python  show.py
